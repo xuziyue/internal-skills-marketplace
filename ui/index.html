@@ -6,12 +6,17 @@
     <title>Internal Skills Hub</title>
     <style>
       :root {
-        --bg: #f5f7f2;
+        --bg: #ecf7ef;
+        --bg-2: #d9efdf;
         --panel: #ffffff;
-        --ink: #102018;
-        --muted: #4f6356;
-        --accent: #196b4d;
-        --chip: #d8eadf;
+        --ink: #0f2a1d;
+        --muted: #3f5f4f;
+        --accent: #197a49;
+        --accent-2: #0f5a35;
+        --chip: #d9f0e2;
+        --border: #c8e2d2;
+        --terminal: #0d1c14;
+        --terminal-ink: #cef2dc;
       }
       * { box-sizing: border-box; }
       body {
@@ -19,22 +24,26 @@
         font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at 20% 0%, #dcefd9 0%, transparent 40%),
-          radial-gradient(circle at 80% 10%, #fbe8c8 0%, transparent 35%),
+          radial-gradient(circle at 20% 0%, var(--bg-2) 0%, transparent 45%),
+          radial-gradient(circle at 85% 10%, #e8f7dd 0%, transparent 30%),
           var(--bg);
       }
       .wrap {
-        max-width: 980px;
+        max-width: 1080px;
         margin: 0 auto;
         padding: 24px;
       }
       .hero {
         background: var(--panel);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 10px 24px rgba(16, 32, 24, 0.08);
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 12px 30px rgba(16, 42, 29, 0.08);
       }
-      h1 { margin: 0 0 8px; }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+      }
       .muted { color: var(--muted); }
       .toolbar {
         margin: 16px 0;
@@ -43,22 +52,29 @@
         flex-wrap: wrap;
       }
       input, select {
-        border: 1px solid #cfe0d5;
+        border: 1px solid var(--border);
         border-radius: 10px;
         padding: 10px 12px;
         background: #fff;
         min-width: 220px;
       }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      .list {
+        display: flex;
+        flex-direction: column;
         gap: 14px;
       }
       .card {
         background: var(--panel);
-        border-radius: 14px;
-        padding: 14px;
-        box-shadow: 0 6px 16px rgba(16, 32, 24, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 8px 20px rgba(16, 42, 29, 0.06);
+      }
+      .card-row {
+        display: grid;
+        grid-template-columns: 64px 1fr auto;
+        gap: 14px;
+        align-items: start;
       }
       .chip {
         display: inline-block;
@@ -74,8 +90,114 @@
         font-size: 12px;
         color: var(--accent);
       }
+      .logo {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #badfca;
+        background: linear-gradient(145deg, #daf2e2, #c3e7d1);
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f4f31;
+      }
+      .logo.github {
+        background: linear-gradient(145deg, #1f3a2e, #10251d);
+        color: #ecfff3;
+        border-color: #345c4a;
+      }
+      .meta {
+        margin: 8px 0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 9px 12px;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn:hover {
+        background: var(--accent-2);
+      }
+      .btn.secondary {
+        background: #2d5a44;
+      }
+      .install-panel {
+        margin-top: 14px;
+        border-top: 1px dashed #bdd8c9;
+        padding-top: 14px;
+      }
+      .install-panel input {
+        min-width: 0;
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      .section-title {
+        margin: 10px 0 6px;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .terminal {
+        background: var(--terminal);
+        color: var(--terminal-ink);
+        border-radius: 10px;
+        border: 1px solid #1b3a2a;
+        overflow: hidden;
+      }
+      .terminal-head {
+        padding: 8px 10px;
+        font-size: 12px;
+        color: #98d3b1;
+        border-bottom: 1px solid #1d3a2b;
+      }
+      .terminal-body {
+        padding: 10px;
+      }
+      .cmd-row {
+        display: grid;
+        grid-template-columns: 14px 1fr;
+        gap: 8px;
+        align-items: start;
+        margin-bottom: 6px;
+      }
+      .prompt {
+        color: #7dd3a7;
+      }
+      .code-inline {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .snippet {
+        background: #102119;
+        color: #bff0d4;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #1c3e2d;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
       @media (max-width: 600px) {
         .wrap { padding: 14px; }
+        .card-row {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -94,14 +216,96 @@
           <option value="deprecated">deprecated</option>
         </select>
       </div>
-      <div id="grid" class="grid"></div>
+      <div id="list" class="list"></div>
     </div>
 
     <script>
-      const grid = document.getElementById('grid');
+      const list = document.getElementById('list');
       const q = document.getElementById('q');
       const stability = document.getElementById('stability');
+      const defaultRepo = 'https://github.com/xuziyue/internal-skills-marketplace.git';
       let skills = [];
+
+      function escapeHtml(text) {
+        return String(text)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function logoClass(skill) {
+        if (skill.slug === 'code-review-basic') return 'logo github';
+        return 'logo';
+      }
+
+      function logoText(skill) {
+        if (skill.slug === 'code-review-basic') return 'GH';
+        return 'SK';
+      }
+
+      function buildInstallCommands(repo, ref, path) {
+        return [
+          `git submodule add ${repo} ${path}`,
+          `git -C ${path} checkout ${ref}`,
+          'git add .gitmodules ' + path,
+          'git commit -m "Add skills marketplace submodule"'
+        ];
+      }
+
+      function buildLockSnippet(skill, ref, path) {
+        return JSON.stringify(
+          {
+            slug: skill.slug,
+            version: ref,
+            source: `${path}/${skill.path}`
+          },
+          null,
+          2
+        );
+      }
+
+      async function copyText(text, id) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const el = document.getElementById(id);
+          if (el) el.textContent = 'Copied';
+          setTimeout(() => {
+            const reset = document.getElementById(id);
+            if (reset) reset.textContent = '';
+          }, 1200);
+        } catch {
+          const el = document.getElementById(id);
+          if (el) el.textContent = 'Copy failed';
+        }
+      }
+
+      function toggleInstallPanel(slug) {
+        const panel = document.getElementById(`install-${slug}`);
+        if (!panel) return;
+        panel.hidden = !panel.hidden;
+      }
+
+      function refreshInstallPreview(skill) {
+        const repoEl = document.getElementById(`repo-${skill.slug}`);
+        const refEl = document.getElementById(`ref-${skill.slug}`);
+        const pathEl = document.getElementById(`path-${skill.slug}`);
+        const cmdEl = document.getElementById(`cmd-${skill.slug}`);
+        const lockEl = document.getElementById(`lock-${skill.slug}`);
+
+        if (!repoEl || !refEl || !pathEl || !cmdEl || !lockEl) return;
+
+        const repo = repoEl.value.trim() || defaultRepo;
+        const ref = refEl.value.trim() || skill.recommendedVersion;
+        const targetPath = pathEl.value.trim() || 'vendor/skills-marketplace';
+
+        const commands = buildInstallCommands(repo, ref, targetPath);
+        cmdEl.innerHTML = commands
+          .map((cmd) => `<div class="cmd-row"><span class="prompt">$</span><span class="code-inline">${escapeHtml(cmd)}</span></div>`)
+          .join('');
+        lockEl.textContent = buildLockSnippet(skill, ref, targetPath);
+      }
 
       function render() {
         const query = q.value.trim().toLowerCase();
@@ -115,23 +319,100 @@
           return byStability && haystack.includes(query);
         });
 
-        grid.innerHTML = filtered
+        list.innerHTML = filtered
           .map((skill) => {
             const tags = (skill.tags || []).map((t) => `<span class="chip">${t}</span>`).join('');
+            const panelId = `install-${skill.slug}`;
+            const cmdId = `cmd-${skill.slug}`;
+            const lockId = `lock-${skill.slug}`;
+            const cmdStatusId = `cmd-status-${skill.slug}`;
+            const lockStatusId = `lock-status-${skill.slug}`;
             return `
               <article class="card">
-                <div class="status">${skill.stability}</div>
-                <h3>${skill.name}</h3>
-                <p class="muted">${skill.summary}</p>
-                <p><strong>Version:</strong> ${skill.version}</p>
-                <p><strong>Recommended:</strong> ${skill.recommendedVersion}</p>
-                <p><strong>Min safe:</strong> ${skill.minSafeVersion}</p>
-                <div>${tags}</div>
+                <div class="card-row">
+                  <div class="${logoClass(skill)}">${logoText(skill)}</div>
+                  <div>
+                    <div class="status">${skill.stability}</div>
+                    <h3>${escapeHtml(skill.name)}</h3>
+                    <p class="muted">${escapeHtml(skill.summary)}</p>
+                    <div class="meta">
+                      <span><strong>Version:</strong> ${skill.version}</span>
+                      <span><strong>Recommended:</strong> ${skill.recommendedVersion}</span>
+                    </div>
+                    <div>${tags}</div>
+                  </div>
+                  <div>
+                    <button class="btn" data-action="toggle-install" data-skill="${skill.slug}">Add as Submodule</button>
+                  </div>
+                </div>
+                <div id="${panelId}" class="install-panel" hidden>
+                  <input id="repo-${skill.slug}" value="${defaultRepo}" placeholder="Skills repo URL" />
+                  <input id="ref-${skill.slug}" value="${skill.recommendedVersion}" placeholder="Ref (tag/sha)" />
+                  <input id="path-${skill.slug}" value="vendor/skills-marketplace" placeholder="Submodule path" />
+                  <div class="section-title">Install commands</div>
+                  <div class="terminal">
+                    <div class="terminal-head">Terminal</div>
+                    <div id="${cmdId}" class="terminal-body"></div>
+                  </div>
+                  <div class="row" style="margin-top: 8px;">
+                    <button class="btn secondary" data-action="copy-commands" data-skill="${skill.slug}">Copy commands</button>
+                    <span id="${cmdStatusId}" class="muted"></span>
+                  </div>
+                  <div class="section-title">Project lock snippet</div>
+                  <pre id="${lockId}" class="snippet"></pre>
+                  <div class="row" style="margin-top: 8px;">
+                    <button class="btn secondary" data-action="copy-lock" data-skill="${skill.slug}">Copy lock snippet</button>
+                    <span id="${lockStatusId}" class="muted"></span>
+                  </div>
+                </div>
               </article>
             `;
           })
           .join('');
+
+        for (const skill of filtered) {
+          const repoEl = document.getElementById(`repo-${skill.slug}`);
+          const refEl = document.getElementById(`ref-${skill.slug}`);
+          const pathEl = document.getElementById(`path-${skill.slug}`);
+          if (repoEl) repoEl.addEventListener('input', () => refreshInstallPreview(skill));
+          if (refEl) refEl.addEventListener('input', () => refreshInstallPreview(skill));
+          if (pathEl) pathEl.addEventListener('input', () => refreshInstallPreview(skill));
+          refreshInstallPreview(skill);
+        }
       }
+
+      list.addEventListener('click', async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const action = target.getAttribute('data-action');
+        const slug = target.getAttribute('data-skill');
+        if (!action || !slug) return;
+
+        const skill = skills.find((x) => x.slug === slug);
+        if (!skill) return;
+
+        if (action === 'toggle-install') {
+          toggleInstallPanel(slug);
+          refreshInstallPreview(skill);
+          return;
+        }
+
+        if (action === 'copy-commands') {
+          const repo = (document.getElementById(`repo-${slug}`)?.value || '').trim() || defaultRepo;
+          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || skill.recommendedVersion;
+          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || 'vendor/skills-marketplace';
+          const lines = buildInstallCommands(repo, ref, targetPath).join('\n');
+          await copyText(lines, `cmd-status-${slug}`);
+          return;
+        }
+
+        if (action === 'copy-lock') {
+          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || skill.recommendedVersion;
+          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || 'vendor/skills-marketplace';
+          const snippet = buildLockSnippet(skill, ref, targetPath);
+          await copyText(snippet, `lock-status-${slug}`);
+        }
+      });
 
       async function load() {
         const res = await fetch('../catalog/index.json');
@@ -144,7 +425,7 @@
       stability.addEventListener('change', render);
 
       load().catch((err) => {
-        grid.innerHTML = `<article class="card"><p>Failed to load catalog: ${err.message}</p></article>`;
+        list.innerHTML = `<article class="card"><p>Failed to load catalog: ${err.message}</p></article>`;
       });
     </script>
   </body>

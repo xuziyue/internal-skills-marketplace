@@ -4,7 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const skillsDir = path.join(root, 'skills');
 
-const requiredFiles = ['manifest.json', 'README.md', 'CHANGELOG.md'];
+const requiredFiles = ['manifest.json', 'README.md', 'CHANGELOG.md', 'SKILL.md'];
 const requiredFields = [
   'name',
   'slug',
@@ -68,10 +68,24 @@ async function main() {
   const entries = await fs.readdir(skillsDir, { withFileTypes: true });
   const skillDirs = entries.filter((x) => x.isDirectory());
   const allErrors = [];
+  const skipped = [];
 
   for (const entry of skillDirs) {
     const folderName = entry.name;
     const skillPath = path.join(skillsDir, folderName);
+    const manifestPath = path.join(skillPath, 'manifest.json');
+
+    let hasManifest = true;
+    try {
+      await fs.access(manifestPath);
+    } catch {
+      hasManifest = false;
+    }
+
+    if (!hasManifest) {
+      skipped.push(folderName);
+      continue;
+    }
 
     for (const file of requiredFiles) {
       const filePath = path.join(skillPath, file);
@@ -82,7 +96,6 @@ async function main() {
       }
     }
 
-    const manifestPath = path.join(skillPath, 'manifest.json');
     try {
       const manifest = await readJson(manifestPath);
       const errors = validateManifest(manifest, folderName);
@@ -101,7 +114,11 @@ async function main() {
     return;
   }
 
-  console.log(`Skill validation passed (${skillDirs.length} skill folders).`);
+  const validatedCount = skillDirs.length - skipped.length;
+  console.log(`Skill validation passed (${validatedCount} skill folders).`);
+  if (skipped.length) {
+    console.log(`Skipped placeholder folders (no manifest.json): ${skipped.join(', ')}`);
+  }
 }
 
 main().catch((error) => {

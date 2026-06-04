@@ -59,5 +59,6 @@ Each folder under `skills/` must include:
 - `manifest.json`
 - `README.md`
 - `CHANGELOG.md`
+- `SKILL.md`
 
 See `specs/schemas/skill-manifest.schema.json` for expected fields.

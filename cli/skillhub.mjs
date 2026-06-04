@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const catalogPath = path.join(root, 'catalog', 'index.json');
-const repoUrl = 'git@github.com:YOUR_ORG/internal-skills-marketplace.git';
+const repoUrl = 'https://github.com/xuziyue/internal-skills-marketplace.git';
 
 function usage() {
   console.log(`Usage:
