@@ -1,0 +1,17 @@
+{
+  "name": "SQL to PySpark Converter",
+  "slug": "sql-to-pyspark-converter",
+  "version": "1.0.0",
+  "summary": "Convert SQL to production-ready PySpark code with memory and speed optimizations.",
+  "description": "Transforms user-provided SQL into optimized PySpark DataFrame code with partition strategy, projection pushdown, join optimization hints, and cache guidance.",
+  "owners": [
+    {
+      "name": "Data Platform Engineering",
+      "contact": "data-platform@example.com"
+    }
+  ],
+  "stability": "stable",
+  "tags": ["data-engineering", "sql", "pyspark", "performance"],
+  "recommendedVersion": "1.0.0",
+  "minSafeVersion": "1.0.0"
+}
