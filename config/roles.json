@@ -1,0 +1,9 @@
+{
+  "version": "0.1.0",
+  "roles": {
+    "admin": ["platform-admin@example.com"],
+    "reviewer": ["platform-reviewer@example.com"],
+    "maintainer": ["platform-eng@example.com"],
+    "consumer": ["all-engineers@example.com"]
+  }
+}

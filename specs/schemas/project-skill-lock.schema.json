@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.example/schemas/project-skill-lock.schema.json",
+  "title": "Project Skill Lock",
+  "type": "object",
+  "required": ["project", "skills"],
+  "properties": {
+    "project": { "type": "string" },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "version"],
+        "properties": {
+          "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

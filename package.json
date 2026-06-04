@@ -1,0 +1,11 @@
+{
+  "name": "internal-skills-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:catalog": "node scripts/build-catalog-index.mjs",
+    "validate:skills": "node scripts/validate-skills.mjs",
+    "cli": "node cli/skillhub.mjs"
+  }
+}

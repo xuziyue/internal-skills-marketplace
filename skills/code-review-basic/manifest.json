@@ -1,0 +1,17 @@
+{
+  "name": "Code Review Basic",
+  "slug": "code-review-basic",
+  "version": "1.0.0",
+  "summary": "Foundational code-review checklist prompts for backend and API pull requests.",
+  "description": "A starter skill that guides developers through correctness, test coverage, and risk-focused review questions.",
+  "owners": [
+    {
+      "name": "Platform Engineering",
+      "contact": "platform-eng@example.com"
+    }
+  ],
+  "stability": "stable",
+  "tags": ["code-review", "backend", "quality"],
+  "recommendedVersion": "1.0.0",
+  "minSafeVersion": "1.0.0"
+}

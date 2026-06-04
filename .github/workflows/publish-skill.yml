@@ -1,0 +1,25 @@
+name: Publish Skill (MVP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      skill_slug:
+        description: "Skill folder slug"
+        required: true
+      version:
+        description: "Version to publish"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run validate:skills
+      - run: npm run build:catalog
+      - run: |
+          echo "MVP publish flow: single-approval process is handled by repository review policy."
+          echo "Requested publish: ${{ github.event.inputs.skill_slug }}@${{ github.event.inputs.version }}"

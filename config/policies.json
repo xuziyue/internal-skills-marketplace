@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "mode": "warn",
+  "rules": [
+    {
+      "id": "min-safe-version",
+      "description": "Warn when a project pins a skill below minSafeVersion",
+      "severity": "warning"
+    },
+    {
+      "id": "deprecated-skill",
+      "description": "Warn when a project uses a deprecated skill",
+      "severity": "warning"
+    }
+  ]
+}

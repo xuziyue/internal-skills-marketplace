@@ -1,0 +1,10 @@
+{
+  "project": "payments-api",
+  "skills": [
+    {
+      "slug": "code-review-basic",
+      "version": "1.0.0",
+      "source": "vendor/skills-marketplace/skills/code-review-basic"
+    }
+  ]
+}
