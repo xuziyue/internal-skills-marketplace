@@ -80,14 +80,17 @@ async function main() {
       return;
     }
 
-    const ref = options.ref || skill.recommendedVersion;
-    const targetPath = options.path || 'vendor/skills-marketplace';
+    const ref = options.ref || 'main';
+    const targetPath = options.path || '.github/skills-marketplace';
 
     console.log('# Run in your consumer project root');
     console.log(`git submodule add ${repoUrl} ${targetPath}`);
     console.log(`git -C ${targetPath} checkout ${ref}`);
+    console.log(`cp -R ${targetPath}/skills/${skill.slug} .github/skills/${skill.slug}`);
+    console.log(`git add .gitmodules ${targetPath} .github/skills/${skill.slug}`);
+    console.log(`git commit -m "Install skill ${skill.slug}@${skill.recommendedVersion} (ref: ${ref})"`);
     console.log('# Then enable this skill in your project lock file:');
-    console.log(`{ "slug": "${skill.slug}", "version": "${ref}", "source": "${targetPath}/${skill.path}" }`);
+    console.log(`{ "slug": "${skill.slug}", "version": "${skill.recommendedVersion}", "source": ".github/skills/${skill.slug}" }`);
     return;
   }
 

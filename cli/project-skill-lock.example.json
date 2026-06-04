@@ -4,7 +4,7 @@
     {
       "slug": "code-review-basic",
       "version": "1.0.0",
-      "source": "vendor/skills-marketplace/skills/code-review-basic"
+      "source": ".github/skills/code-review-basic"
     }
   ]
 }

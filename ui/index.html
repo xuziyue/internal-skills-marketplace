@@ -233,21 +233,22 @@
         return '<div class="logo-wrap"><img src="./assets/github-mark.svg" alt="GitHub logo" /></div>';
       }
 
-      function buildInstallCommands(repo, ref, path) {
+      function buildInstallCommands(skill, repo, ref, path) {
         return [
           `git submodule add ${repo} ${path}`,
           `git -C ${path} checkout ${ref}`,
-          'git add .gitmodules ' + path,
-          'git commit -m "Add skills marketplace submodule"'
+          `cp -R ${path}/skills/${skill.slug} .github/skills/${skill.slug}`,
+          `git add .gitmodules ${path} .github/skills/${skill.slug}`,
+          `git commit -m "Install skill ${skill.slug}@${skill.recommendedVersion} (ref: ${ref})"`
         ];
       }
 
-      function buildLockSnippet(skill, ref, path) {
+      function buildLockSnippet(skill) {
         return JSON.stringify(
           {
             slug: skill.slug,
-            version: ref,
-            source: `${path}/${skill.path}`
+            version: skill.recommendedVersion,
+            source: `.github/skills/${skill.slug}`
           },
           null,
           2
@@ -285,14 +286,14 @@
         if (!repoEl || !refEl || !pathEl || !cmdEl || !lockEl) return;
 
         const repo = repoEl.value.trim() || defaultRepo;
-        const ref = refEl.value.trim() || skill.recommendedVersion;
-        const targetPath = pathEl.value.trim() || 'vendor/skills-marketplace';
+        const ref = refEl.value.trim() || 'main';
+        const targetPath = pathEl.value.trim() || '.github/skills-marketplace';
 
-        const commands = buildInstallCommands(repo, ref, targetPath);
+        const commands = buildInstallCommands(skill, repo, ref, targetPath);
         cmdEl.innerHTML = commands
           .map((cmd) => `<div class="cmd-row"><span class="prompt">$</span><span class="code-inline">${escapeHtml(cmd)}</span></div>`)
           .join('');
-        lockEl.textContent = buildLockSnippet(skill, ref, targetPath);
+        lockEl.textContent = buildLockSnippet(skill);
       }
 
       function render() {
@@ -335,8 +336,8 @@
                 </div>
                 <div id="${panelId}" class="install-panel" hidden>
                   <input id="repo-${skill.slug}" value="${defaultRepo}" placeholder="Skills repo URL" />
-                  <input id="ref-${skill.slug}" value="${skill.recommendedVersion}" placeholder="Ref (tag/sha)" />
-                  <input id="path-${skill.slug}" value="vendor/skills-marketplace" placeholder="Submodule path" />
+                  <input id="ref-${skill.slug}" value="main" placeholder="Ref (branch/tag/sha)" />
+                  <input id="path-${skill.slug}" value=".github/skills-marketplace" placeholder="Submodule path" />
                   <div class="section-title">Install commands</div>
                   <div class="terminal">
                     <div class="terminal-head">Terminal</div>
@@ -387,17 +388,15 @@
 
         if (action === 'copy-commands') {
           const repo = (document.getElementById(`repo-${slug}`)?.value || '').trim() || defaultRepo;
-          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || skill.recommendedVersion;
-          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || 'vendor/skills-marketplace';
-          const lines = buildInstallCommands(repo, ref, targetPath).join('\n');
+          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || 'main';
+          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || '.github/skills-marketplace';
+          const lines = buildInstallCommands(skill, repo, ref, targetPath).join('\n');
           await copyText(lines, `cmd-status-${slug}`);
           return;
         }
 
         if (action === 'copy-lock') {
-          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || skill.recommendedVersion;
-          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || 'vendor/skills-marketplace';
-          const snippet = buildLockSnippet(skill, ref, targetPath);
+          const snippet = buildLockSnippet(skill);
           await copyText(snippet, `lock-status-${slug}`);
         }
       });
