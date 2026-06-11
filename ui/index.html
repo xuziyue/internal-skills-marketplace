@@ -153,6 +153,27 @@
         color: #98d3b1;
         border-bottom: 1px solid #1d3a2b;
       }
+      .terminal.first-use {
+        border-color: #27563f;
+      }
+      .terminal.first-use .terminal-head {
+        background: #123325;
+        color: #9fe2bd;
+      }
+      .terminal.install {
+        border-color: #5b4017;
+      }
+      .terminal.install .terminal-head {
+        background: #3d2b10;
+        color: #f6d394;
+      }
+      .terminal.upgrade {
+        border-color: #274e63;
+      }
+      .terminal.upgrade .terminal-head {
+        background: #112e3d;
+        color: #9fd2f3;
+      }
       .terminal-body {
         padding: 10px;
       }
@@ -236,13 +257,30 @@
         return '<div class="logo-wrap"><img src="./assets/github-mark.svg" alt="GitHub logo" /></div>';
       }
 
-      function buildInstallCommands(skill, repo, ref, path) {
+      function buildFirstUseCommands(repo, path, ref) {
         return [
           `git submodule add ${repo} ${path}`,
           `git -C ${path} checkout ${ref}`,
+          `git add .gitmodules ${path}`,
+          'git commit -m "Init skills marketplace"'
+        ];
+      }
+
+      function buildInstallCommands(skill, path) {
+        return [
           `cp -R ${path}/skills/${skill.slug} .github/skills/${skill.slug}`,
-          `git add .gitmodules ${path} .github/skills/${skill.slug}`,
-          `git commit -m "Install skill ${skill.slug}@${skill.recommendedVersion} (ref: ${ref})"`
+          `git add .github/skills/${skill.slug}`,
+          `git commit -m "Install skill ${skill.slug}@${skill.recommendedVersion}"`
+        ];
+      }
+
+      function buildUpgradeCommands(skill, path, ref) {
+        return [
+          `git -C ${path} checkout ${ref}`,
+          `git -C ${path} pull`,
+          `cp -R ${path}/skills/${skill.slug} .github/skills/${skill.slug}`,
+          `git add ${path} .github/skills/${skill.slug}`,
+          `git commit -m "Upgrade ${skill.slug} to ${skill.recommendedVersion} (ref: ${ref})"`
         ];
       }
 
@@ -283,17 +321,28 @@
         const repoEl = document.getElementById(`repo-${skill.slug}`);
         const refEl = document.getElementById(`ref-${skill.slug}`);
         const pathEl = document.getElementById(`path-${skill.slug}`);
-        const cmdEl = document.getElementById(`cmd-${skill.slug}`);
+        const firstCmdEl = document.getElementById(`first-cmd-${skill.slug}`);
+        const installCmdEl = document.getElementById(`install-cmd-${skill.slug}`);
+        const upgradeCmdEl = document.getElementById(`upgrade-cmd-${skill.slug}`);
         const lockEl = document.getElementById(`lock-${skill.slug}`);
 
-        if (!repoEl || !refEl || !pathEl || !cmdEl || !lockEl) return;
+        if (!repoEl || !refEl || !pathEl || !firstCmdEl || !installCmdEl || !upgradeCmdEl || !lockEl) return;
 
         const repo = repoEl.value.trim() || defaultRepo;
         const ref = refEl.value.trim() || 'main';
         const targetPath = pathEl.value.trim() || '.github/skills-marketplace';
 
-        const commands = buildInstallCommands(skill, repo, ref, targetPath);
-        cmdEl.innerHTML = commands
+        const firstUseCommands = buildFirstUseCommands(repo, targetPath, ref);
+        const installCommands = buildInstallCommands(skill, targetPath);
+        const upgradeCommands = buildUpgradeCommands(skill, targetPath, ref);
+
+        firstCmdEl.innerHTML = firstUseCommands
+          .map((cmd) => `<div class="cmd-row"><span class="prompt">$</span><span class="code-inline">${escapeHtml(cmd)}</span></div>`)
+          .join('');
+        installCmdEl.innerHTML = installCommands
+          .map((cmd) => `<div class="cmd-row"><span class="prompt">$</span><span class="code-inline">${escapeHtml(cmd)}</span></div>`)
+          .join('');
+        upgradeCmdEl.innerHTML = upgradeCommands
           .map((cmd) => `<div class="cmd-row"><span class="prompt">$</span><span class="code-inline">${escapeHtml(cmd)}</span></div>`)
           .join('');
         lockEl.textContent = buildLockSnippet(skill);
@@ -315,9 +364,13 @@
           .map((skill) => {
             const tags = (skill.tags || []).map((t) => `<span class="chip">${t}</span>`).join('');
             const panelId = `install-${skill.slug}`;
-            const cmdId = `cmd-${skill.slug}`;
+            const firstCmdId = `first-cmd-${skill.slug}`;
+            const installCmdId = `install-cmd-${skill.slug}`;
+            const upgradeCmdId = `upgrade-cmd-${skill.slug}`;
             const lockId = `lock-${skill.slug}`;
-            const cmdStatusId = `cmd-status-${skill.slug}`;
+            const firstCmdStatusId = `first-status-${skill.slug}`;
+            const installCmdStatusId = `install-status-${skill.slug}`;
+            const upgradeCmdStatusId = `upgrade-status-${skill.slug}`;
             const lockStatusId = `lock-status-${skill.slug}`;
             return `
               <article class="card">
@@ -341,14 +394,32 @@
                   <input id="repo-${skill.slug}" value="${defaultRepo}" placeholder="Skills repo URL" />
                   <input id="ref-${skill.slug}" value="main" placeholder="Ref (branch/tag/sha)" />
                   <input id="path-${skill.slug}" value=".github/skills-marketplace" placeholder="Submodule path" />
-                  <div class="section-title">Install commands</div>
-                  <div class="terminal">
-                    <div class="terminal-head">Terminal</div>
-                    <div id="${cmdId}" class="terminal-body"></div>
+                  <div class="section-title">First Use</div>
+                  <div class="terminal first-use">
+                    <div class="terminal-head">Initialize marketplace submodule once</div>
+                    <div id="${firstCmdId}" class="terminal-body"></div>
                   </div>
                   <div class="row" style="margin-top: 8px;">
-                    <button class="btn secondary" data-action="copy-commands" data-skill="${skill.slug}">Copy commands</button>
-                    <span id="${cmdStatusId}" class="muted"></span>
+                    <button class="btn secondary" data-action="copy-first" data-skill="${skill.slug}">Copy first-use</button>
+                    <span id="${firstCmdStatusId}" class="muted"></span>
+                  </div>
+                  <div class="section-title">Install This Skill</div>
+                  <div class="terminal install">
+                    <div class="terminal-head">Install ${skill.slug}</div>
+                    <div id="${installCmdId}" class="terminal-body"></div>
+                  </div>
+                  <div class="row" style="margin-top: 8px;">
+                    <button class="btn secondary" data-action="copy-install" data-skill="${skill.slug}">Copy install</button>
+                    <span id="${installCmdStatusId}" class="muted"></span>
+                  </div>
+                  <div class="section-title">Upgrade to This Version</div>
+                  <div class="terminal upgrade">
+                    <div class="terminal-head">Upgrade ${skill.slug} using selected ref</div>
+                    <div id="${upgradeCmdId}" class="terminal-body"></div>
+                  </div>
+                  <div class="row" style="margin-top: 8px;">
+                    <button class="btn secondary" data-action="copy-upgrade" data-skill="${skill.slug}">Copy upgrade</button>
+                    <span id="${upgradeCmdStatusId}" class="muted"></span>
                   </div>
                   <div class="section-title">Project lock snippet</div>
                   <pre id="${lockId}" class="snippet"></pre>
@@ -389,12 +460,27 @@
           return;
         }
 
-        if (action === 'copy-commands') {
+        if (action === 'copy-first') {
           const repo = (document.getElementById(`repo-${slug}`)?.value || '').trim() || defaultRepo;
           const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || 'main';
           const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || '.github/skills-marketplace';
-          const lines = buildInstallCommands(skill, repo, ref, targetPath).join('\n');
-          await copyText(lines, `cmd-status-${slug}`);
+          const lines = buildFirstUseCommands(repo, targetPath, ref).join('\n');
+          await copyText(lines, `first-status-${slug}`);
+          return;
+        }
+
+        if (action === 'copy-install') {
+          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || '.github/skills-marketplace';
+          const lines = buildInstallCommands(skill, targetPath).join('\n');
+          await copyText(lines, `install-status-${slug}`);
+          return;
+        }
+
+        if (action === 'copy-upgrade') {
+          const ref = (document.getElementById(`ref-${slug}`)?.value || '').trim() || 'main';
+          const targetPath = (document.getElementById(`path-${slug}`)?.value || '').trim() || '.github/skills-marketplace';
+          const lines = buildUpgradeCommands(skill, targetPath, ref).join('\n');
+          await copyText(lines, `upgrade-status-${slug}`);
           return;
         }
 
