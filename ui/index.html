@@ -229,7 +229,10 @@
           .replaceAll("'", '&#39;');
       }
 
-      function logoMarkup() {
+      function logoMarkup(skill) {
+        if (skill.slug === 'sql-to-pyspark-converter') {
+          return '<div class="logo-wrap"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/apachespark.svg" alt="Apache Spark logo" /></div>';
+        }
         return '<div class="logo-wrap"><img src="./assets/github-mark.svg" alt="GitHub logo" /></div>';
       }
 
@@ -319,7 +322,7 @@
             return `
               <article class="card">
                 <div class="card-row">
-                  ${logoMarkup()}
+                  ${logoMarkup(skill)}
                   <div>
                     <div class="status">${skill.stability}</div>
                     <h3>${escapeHtml(skill.name)}</h3>
